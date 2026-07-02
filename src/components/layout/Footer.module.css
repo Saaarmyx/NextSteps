@@ -1,0 +1,8 @@
+.footer {
+	position: relative;
+	z-index: 1;
+	padding: 2rem;
+	text-align: center;
+	font-size: 0.85rem;
+	color: rgba(70, 57, 62, 0.5);
+}
