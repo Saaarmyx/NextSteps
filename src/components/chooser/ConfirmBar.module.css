@@ -1,0 +1,39 @@
+.confirm {
+	margin-top: var(--space-xl);
+	text-align: center;
+	max-width: 460px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 2rem 1.5rem;
+	border-top: 1px solid var(--line);
+	opacity: 0;
+	transform: translateY(10px);
+	transition:
+		opacity 0.5s ease,
+		transform 0.5s ease;
+	pointer-events: none;
+}
+
+.show {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+}
+
+.stamp {
+	font-size: 1.6rem;
+	display: block;
+	margin-bottom: 0.6rem;
+}
+
+.title {
+	font-weight: 500;
+	font-size: 1.4rem;
+	margin-bottom: 0.4rem;
+}
+
+.description {
+	font-size: 0.85rem;
+	color: rgba(70, 57, 62, 0.62);
+	margin-bottom: 0.2rem;
+}
