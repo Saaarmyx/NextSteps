@@ -1,0 +1,38 @@
+/* ============================================
+   Design tokens
+   ============================================ */
+:root {
+	/* Paleta */
+	--ivory: #faf6f0;
+	--ivory-deep: #f3ece2;
+	--sage: #8a9a7e;
+	--sage-dark: #5e6e54;
+	--rose: #d8a7a0;
+	--rose-deep: #c68983;
+	--rose-hover: #b97770;
+	--plum: #46393e;
+	--gold: #be9a5c;
+	--line: rgba(70, 57, 62, 0.14);
+	--shadow: rgba(70, 57, 62, 0.1);
+
+	/* Tipografía */
+	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	/* Espaciado */
+	--space-xs: 0.4rem;
+	--space-sm: 0.75rem;
+	--space-md: 1.4rem;
+	--space-lg: 2.5rem;
+	--space-xl: 4rem;
+
+	/* Radios */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-pill: 999px;
+
+	/* Transiciones */
+	--ease-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--transition-fast: 0.25s ease;
+	--transition-base: 0.35s ease;
+	--transition-slow: 0.6s ease;
+}
