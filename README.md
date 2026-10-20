@@ -1,66 +1,184 @@
-# Elección Romántica
+# Planificador de Salidas
 
-Una experiencia web interactiva, romántica y minimalista donde los usuarios eligen su próxima cita entre 12 planes, confirman la selección a través de un ritual de confirmación con modal y spinner, y reciben una carta final personalizada. Al confirmar la elección, un endpoint serverless envía una notificación privada a Telegram manteniendo las credenciales protegidas de forma segura en el backend.
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
+![License](https://img.shields.io/badge/License-Apache_2.0-D22128?logo=apache&logoColor=white)
+![Node](https://img.shields.io/badge/Node-%3E%3D20.19-5FA04E?logo=node.js)
+
+Experiencia web para elegir una salida entre un catálogo de planes, confirmar la elección con
+fecha y hora, y recibir la confirmación en Telegram sin exponer credenciales en el navegador.
+
+---
+
+## Propósito
+
+| Aspecto               | Detalle                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| Responsabilidad única | Frontend React para la experiencia de elección y una función serverless que entrega la confirmación. |
+| Integración           | Se despliega como aplicación estática (Vite) + funciones serverless en `api/` sobre Vercel.          |
+| Stack                 | React 19, TypeScript 6, Vite 8, Vitest 5, CSS Modules. Sin dependencias de UI de terceros.           |
+| Licencia              | Apache License 2.0.                                                                                  |
+
+---
 
 ## Estructura del proyecto
 
 ```
 /
+├── api/                       # Funciones serverless (Vercel)
+│   ├── _lib/
+│   │   ├── config.js          # Límites y ventanas de seguridad
+│   │   └── security.js        # Sesión firmada, rate limit, origen y saneado
+│   ├── session.js             # Emite la cookie de sesión HttpOnly
+│   └── telegram.js            # Recibe la confirmación y la envía a Telegram
+├── public/
+│   ├── favico.svg             # Favicon (sustituible)
+│   └── logo.png               # Logo de la aplicación (sustituible)
+├── src/
+│   ├── components/
+│   │   ├── chooser/           # PlanGrid, PlanCard, ConfirmBar
+│   │   ├── hero/              # Hero y marca
+│   │   ├── layout/            # GardenBackground, Petals, Footer
+│   │   ├── letter/            # Carta final
+│   │   ├── modal/             # ConfirmModal
+│   │   └── ui/                # Button reutilizable
+│   ├── config/site.ts         # Textos y nombre del destinatario
+│   ├── data/plans.ts          # Catálogo de planes
+│   ├── hooks/                 # usePlanSelection, useFocusTrap
+│   ├── lib/                   # api, date, validation
+│   ├── styles/                # tokens.css y global.css
+│   └── types/                 # Tipos compartidos
+├── tests/                     # Pruebas unitarias y de componentes
 ├── index.html
-├── style.css
-├── script.js
-├── package.json
-├── README.md
-└── api/
-    └── telegram.js
-
+├── vite.config.ts
+└── vercel.json
 ```
 
-Todos los componentes de la interfaz se encuentran separados en sus respectivos archivos (`index.html`, `style.css` y `script.js`), manteniendo una arquitectura limpia sin dependencias de frameworks externos.
+---
 
-## Cómo funciona
+## Componentes y flujo
 
-1. **Elección**: El usuario selecciona una de las 12 tarjetas interactivas mediante clics o navegación por teclado. La tarjeta seleccionada se ilumina con un sello animado y habilita la barra de confirmación.
-2. **Confirmación con pausa**: Al pulsar el botón de confirmación se despliega un modal centrado con fondo desenfocado para validar la decisión antes de proceder al envío.
-3. **Envío seguro**: Al confirmar la elección, el botón se desactiva temporalmente, se activa un indicador de carga (spinner) y se realiza una petición `POST` al endpoint `/api/telegram` enviando los datos del plan (`emoji`, `title` y `description`).
-4. **Resultado**:
+1. **Selección** — `PlanGrid` renderiza el catálogo; `PlanCard` es accesible con teclado
+   (`role="button"`, `tabIndex`, `aria-pressed`) y con lector de pantalla (`<ul>`/`<li>`).
+2. **Resumen** — `ConfirmBar` muestra emoji, título y descripción del plan elegido.
+3. **Confirmación** — `ConfirmModal` pide fecha, hora y una nota opcional.
+   `useFocusTrap` mantiene el foco dentro del diálogo, `Escape` cierra y el foco vuelve al
+   elemento de origen.
+4. **Envío** — `usePlanSelection` valida los datos, pide una sesión firmada y envía el
+   payload a `/api/telegram`.
+5. **Resultado** — Al confirmarse, el catálogo se desvanece, llueven pétalos y aparece la
+   carta final con la opción de elegir otro plan.
 
-- **Éxito**: Las opciones se desvanecen, se despliegan efectos visuales de pétalos animados y se revela una carta elegante con el mensaje final. La elección se almacena localmente mediante `localStorage` para persistir el estado ante recargas de página.
-- **Error**: El modal muestra una advertencia y el botón se reactiva para permitir un nuevo intento.
+### Endpoint de confirmación
+
+| Ruta            | Método | Descripción                                                               |
+| --------------- | ------ | ------------------------------------------------------------------------- |
+| `/api/session`  | `GET`  | Emite una cookie `HttpOnly` firmada con HMAC-SHA256 (vigencia de 1 hora). |
+| `/api/telegram` | `POST` | Valida la sesión, el origen y el cuerpo, y entrega el mensaje a Telegram. |
+
+### Capas de protección
+
+- **Sesión firmada**: `POST` sin cookie válida responde `401`.
+- **Origen**: se compara el hostname del `Origin` con el del servidor (`ALLOWED_ORIGIN` fuerza la coincidencia estricta).
+- **Rate limit**: 5 envíos por IP cada 10 minutos; el sexto responde `429`.
+- **Validación estricta**: longitudes, formatos de fecha y hora y saneado de la nota.
+- **Timeout**: la llamada a Telegram se corta a los 8 segundos.
+- **Privacidad**: la IP y el sistema operativo solo se incluyen si se define `INCLUDE_CLIENT_META=true`.
+
+> El limitador vive en memoria de cada instancia. Para un despliegue con varias instancias,
+> conviene añadir reglas de rate limit en el WAF de la plataforma de hosting.
+
+---
 
 ## Variables de entorno
 
-El endpoint `/api/telegram` requiere dos variables de entorno configuradas en el servidor para proteger el token:
+| Variable              | Obligatoria | Descripción                                                             |
+| --------------------- | ----------- | ----------------------------------------------------------------------- |
+| `BOT_TOKEN`           | Sí          | Token del bot de Telegram ([BotFather](https://t.me/BotFather)).        |
+| `CHAT_ID`             | Sí          | ID del chat o usuario que recibe la notificación.                       |
+| `SESSION_SECRET`      | No          | Clave para firmar la sesión. Si se omite, se deriva de `BOT_TOKEN`.     |
+| `RECIPIENT_NAME`      | No          | Nombre de la persona destinataria. Si se omite, el mensaje es genérico. |
+| `ALLOWED_ORIGIN`      | No          | Origen permitido en las peticiones `POST`.                              |
+| `INCLUDE_CLIENT_META` | No          | `true` para adjuntar IP y sistema operativo al mensaje.                 |
 
-| Variable    | Descripción                                              |
-| ----------- | -------------------------------------------------------- |
-| `BOT_TOKEN` | Token del bot de Telegram obtenido a través de BotFather |
-| `CHAT_ID`   | ID del chat o usuario destinatario de la notificación    |
+Copia `.env.example` como `.env.local` en la raíz:
 
-### Cómo configurarlas
+```bash
+cp .env.example .env.local
+```
 
-1. Crear un bot en Telegram a través de [@BotFather](https://t.me/BotFather) utilizando el comando `/newbot` para obtener el token.
-2. Iniciar una conversación con el bot creado para registrar el chat activo.
-3. Consultar la URL `[https://api.telegram.org/bot](https://api.telegram.org/bot)<TU_TOKEN>/getUpdates` para extraer el valor numérico del campo `chat.id`.
+---
+
+## Inicio rápido
+
+```tsx
+import { usePlanSelection } from './hooks/usePlanSelection';
+
+export function App() {
+  const { selectedPlan, isModalOpen, openModal, submit } = usePlanSelection();
+
+  return (
+    <>
+      <PlanGrid selectedPlan={selectedPlan} onSelect={selectPlan} />
+      <ConfirmBar plan={selectedPlan} onConfirm={openModal} />
+      <ConfirmModal open={isModalOpen} plan={selectedPlan} onSubmit={submit} />
+    </>
+  );
+}
+```
+
+---
 
 ## Desarrollo local
 
 ```bash
-npm install -g vercel   # en caso de no tener la CLI instalada globalmente
-vercel dev
-
+npm install        # instalar dependencias
+npm run dev        # frontend en http://127.0.0.1:5173
+npm run dev:full   # frontend + funciones serverless (requiere `vercel login`)
 ```
 
-Crear un archivo `.env.local` en la raíz del directorio con la siguiente estructura:
+El frontend envía las peticiones a `/api`; en modo `vite` se reenvían por proxy a
+`http://127.0.0.1:3000`, donde `vercel dev` expone las funciones.
 
+### Calidad
+
+```bash
+npm run test         # pruebas unitarias y de componentes
+npm run lint         # ESLint
+npm run format       # Prettier
+npm run build        # comprobación de tipos + build de producción
 ```
-BOT_TOKEN=tu_token_aqui
-CHAT_ID=tu_chat_id_aqui
 
+---
+
+## Personalización
+
+| Qué                     | Dónde                                                            |
+| ----------------------- | ---------------------------------------------------------------- |
+| Nombre del destinatario | `src/config/site.ts` → `recipientName` (vacío = texto genérico). |
+| Textos de la interfaz   | `src/config/site.ts` → `copy`.                                   |
+| Catálogo de planes      | `src/data/plans.ts`.                                             |
+| Logo y favicon          | `public/logo.png` y `public/favico.svg`.                         |
+| Paleta y tipografía     | `src/styles/tokens.css`.                                         |
+
+---
+
+## Accesibilidad
+
+- Navegación completa por teclado en el catálogo y en el modal.
+- Roles y estados ARIA correctos (`aria-pressed`, `aria-modal`, `aria-live`).
+- Trampa de foco en el modal y devolución del foco al cerrarlo.
+- Soporte de `prefers-reduced-motion` para desactivar animaciones.
+
+---
+
+## Contribución
+
+Los commits siguen [Conventional Commits](https://www.conventionalcommits.org/es/) y son
+atómicos: un cambio, un mensaje. Nunca uses `git add .`; agrega rutas explícitas.
+
+```bash
+git add src/components/chooser/PlanCard.tsx
+git commit -m "fix(chooser): restore focus after card selection"
 ```
-
-## Características técnicas y de accesibilidad
-
-- **Accesibilidad (a11y)**: Tarjetas totalmente navegables por teclado mediante atributos `tabindex`, `role="button"` y estados `aria-pressed`.
-- **Rendimiento y adaptabilidad**: Soporte completo para la media query `prefers-reduced-motion` para desactivar efectos visuales según las preferencias del sistema operativo.
-- **Vanilla Stack**: Desarrollado exclusivamente con HTML5, CSS3 y JavaScript moderno en el frontend, respaldado por una función serverless de Node.js en el backend.
