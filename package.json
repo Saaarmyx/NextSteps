@@ -1,12 +1,45 @@
 {
-  "name": "emy-date",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Experiencia romántica para que Emily elija y confirme su próxima cita.",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "scripts": {
-    "dev": "vercel dev"
-  }
+	"name": "date-planner",
+	"private": true,
+	"version": "2.0.0",
+	"description": "Planificador de salidas romántico: elige un plan, planifica fecha y hora y recibe la confirmación.",
+	"type": "module",
+	"license": "Apache-2.0",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"scripts": {
+		"dev": "vite",
+		"dev:full": "vercel dev",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"dependencies": {
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@testing-library/jest-dom": "^7.0.1",
+		"@testing-library/react": "^16.3.3",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.1.2",
+		"eslint": "^10.13.0",
+		"eslint-plugin-react-hooks": "^7.1.1",
+		"eslint-plugin-react-refresh": "^0.5.7",
+		"globals": "^17.13.0",
+		"jsdom": "^30.1.3",
+		"prettier": "^3.9.10",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.72.0",
+		"vercel": "^64.7.0",
+		"vite": "^8.3.4",
+		"vitest": "^5.0.5"
+	}
 }
