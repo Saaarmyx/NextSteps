@@ -1,0 +1,32 @@
+.petals {
+	position: fixed;
+	inset: 0;
+	z-index: 5;
+	pointer-events: none;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity var(--transition-slow);
+}
+
+.show {
+	opacity: 1;
+}
+
+.petal {
+	position: absolute;
+	top: -10%;
+	font-size: 1.2rem;
+	animation: fall linear forwards;
+	will-change: transform;
+}
+
+@keyframes fall {
+	0% {
+		transform: translate3d(0, 0, 0) rotate(0deg);
+		opacity: 0.9;
+	}
+	100% {
+		transform: translate3d(var(--drift, 40px), 115vh, 0) rotate(320deg);
+		opacity: 0.15;
+	}
+}
