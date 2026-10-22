@@ -1,15 +1,14 @@
 # Planificador de Salidas
 
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
-![License](https://img.shields.io/badge/License-Apache_2.0-D22128?logo=apache&logoColor=white)
-![Node](https://img.shields.io/badge/Node-%3E%3D20.19-5FA04E?logo=node.js)
-
-Experiencia web para elegir una salida entre un catálogo de planes, confirmar la elección con
-fecha y hora, y recibir la confirmación en Telegram sin exponer credenciales en el navegador.
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
+[![License](https://img.shields.io/badge/License-Apache_2.0-D22128?logo=apache&logoColor=white)](LICENSE)
+[![Node](https://img.shields.io/badge/Node-%3E%3D20.19-5FA04E?logo=node.js)](https://nodejs.org)
 
 ---
+
+Experiencia web para elegir una salida entre un catálogo de planes, confirmar la elección con fecha y hora, y recibir la confirmación en Telegram sin exponer credenciales en el navegador.
 
 ## Propósito
 
@@ -59,16 +58,11 @@ fecha y hora, y recibir la confirmación en Telegram sin exponer credenciales en
 
 ## Componentes y flujo
 
-1. **Selección** — `PlanGrid` renderiza el catálogo; `PlanCard` es accesible con teclado
-   (`role="button"`, `tabIndex`, `aria-pressed`) y con lector de pantalla (`<ul>`/`<li>`).
+1. **Selección** — `PlanGrid` renderiza el catálogo; `PlanCard` es accesible con teclado (`role="button"`, `tabIndex`, `aria-pressed`) y con lector de pantalla (`<ul>`/`<li>`).
 2. **Resumen** — `ConfirmBar` muestra emoji, título y descripción del plan elegido.
-3. **Confirmación** — `ConfirmModal` pide fecha, hora y una nota opcional.
-   `useFocusTrap` mantiene el foco dentro del diálogo, `Escape` cierra y el foco vuelve al
-   elemento de origen.
-4. **Envío** — `usePlanSelection` valida los datos, pide una sesión firmada y envía el
-   payload a `/api/telegram`.
-5. **Resultado** — Al confirmarse, el catálogo se desvanece, llueven pétalos y aparece la
-   carta final con la opción de elegir otro plan.
+3. **Confirmación** — `ConfirmModal` pide fecha, hora y una nota opcional. `useFocusTrap` mantiene el foco dentro del diálogo, `Escape` cierra y el foco vuelve al elemento de origen.
+4. **Envío** — `usePlanSelection` valida los datos, pide una sesión firmada y envía el payload a `/api/telegram`.
+5. **Resultado** — Al confirmarse, el catálogo se desvanece, llueven pétalos y aparece la carta final con la opción de elegir otro plan.
 
 ### Endpoint de confirmación
 
@@ -86,8 +80,7 @@ fecha y hora, y recibir la confirmación en Telegram sin exponer credenciales en
 - **Timeout**: la llamada a Telegram se corta a los 8 segundos.
 - **Privacidad**: la IP y el sistema operativo solo se incluyen si se define `INCLUDE_CLIENT_META=true`.
 
-> El limitador vive en memoria de cada instancia. Para un despliegue con varias instancias,
-> conviene añadir reglas de rate limit en el WAF de la plataforma de hosting.
+> El limitador vive en memoria de cada instancia. Para un despliegue con varias instancias, conviene añadir reglas de rate limit en el WAF de la plataforma de hosting.
 
 ---
 
@@ -138,8 +131,7 @@ npm run dev        # frontend en http://127.0.0.1:5173
 npm run dev:full   # frontend + funciones serverless (requiere `vercel login`)
 ```
 
-El frontend envía las peticiones a `/api`; en modo `vite` se reenvían por proxy a
-`http://127.0.0.1:3000`, donde `vercel dev` expone las funciones.
+El frontend envía las peticiones a `/api`; en modo `vite` se reenvían por proxy a `http://127.0.0.1:3000`, donde `vercel dev` expone las funciones.
 
 ### Calidad
 
@@ -175,8 +167,7 @@ npm run build        # comprobación de tipos + build de producción
 
 ## Contribución
 
-Los commits siguen [Conventional Commits](https://www.conventionalcommits.org/es/) y son
-atómicos: un cambio, un mensaje. Nunca uses `git add .`; agrega rutas explícitas.
+Los commits siguen [Conventional Commits](https://www.conventionalcommits.org/es/) y son atómicos: un cambio, un mensaje. Nunca uses `git add .`; agrega rutas explícitas.
 
 ```bash
 git add src/components/chooser/PlanCard.tsx

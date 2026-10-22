@@ -1,4 +1,5 @@
-# Dependencias
+# NextSteps — .gitignore
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
@@ -8,33 +9,30 @@ dist/
 build/
 *.tsbuildinfo
 
-# Entorno (nunca subir credenciales)
+# Local config
 .env
-.env.*
-!.env.example
+.env.local
+.env.*.local
 
 # Vercel
-.vercel
-.vercel_build_output
-
-# Testing
-coverage/
+.vercel/
 
 # Logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
-# IDEs
+# IDE
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json.example
 .idea/
-*.swp
-*.swo
 
-# Sistema
+# OS
 .DS_Store
 Thumbs.db
-Desktop.ini
+
+# Test coverage
+coverage/
+
+# TypeScript cache
+*.tsbuildinfo
