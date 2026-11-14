@@ -1,3 +1,11 @@
+<picture>
+ <a href="/">
+  <img src="assets/Saaarmyx-Github.svg" alt="NextSteps Preview" style="border-radius: 20px;" width="100%" />
+  </a>
+</picture>
+
+---
+
 <h1 align="center">Bienvenido a NextSteps</h1>
 
 Planificador de salidas: elige un plan, propón fecha y hora, y recibe la confirmación por Telegram.
@@ -7,6 +15,8 @@ Para aprender más sobre el uso del proyecto, visita la [documentación oficial]
 ## Tabla de Contenidos
 
 - [Estado del proyecto](#estado-del-proyecto)
+- [Descripción](#descripción)
+- [Características principales](#características-principales)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Primeros Pasos](#primeros-pasos)
   - [Guía de Inicio Rápido](#guía-de-inicio-rápido)
