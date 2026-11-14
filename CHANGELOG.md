@@ -2,7 +2,7 @@
 
 > Todos los cambios notables de este proyecto se documentarán en este archivo.
 
-## NextSteps 0.3
+## NextSteps 0.2
 
 ### 2026-11-14
 
@@ -13,13 +13,6 @@
 
 - Mejorado
   - Se actualizaron los enlaces de la tabla de contenidos para incluir las nuevas secciones.
-
-## NextSteps 0.2
-
-### 2026-11-14
-
-- Agregado
-  - Se añadió documentación con README, CHANGELOG y LICENSE.
 
 ## NextSteps 0.1
 
